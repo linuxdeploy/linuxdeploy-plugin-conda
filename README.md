@@ -16,15 +16,10 @@ This generates a working FreeCAD AppImage from Conda ingredients, including Qt a
 
 ```
 wget -c "https://raw.githubusercontent.com/TheAssassin/linuxdeploy-plugin-conda/master/linuxdeploy-plugin-conda.sh"
-
-CONDA_PACKAGES=freecad CONDA_CHANNELS=freecad bash -ex ./linuxdeploy-plugin-conda.sh --appdir AppDir
-
-( cd AppDir ; ln -s usr/bin/FreeCAD AppRun )
-
 wget -c "https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage"
-chmod +x linuxdeploy-x86_64.AppImage
-mkdir -p AppDir/usr/share/applications/
-cat > AppDir/usr/share/applications/freecad.desktop <<\EOF
+chmod +x linuxdeploy-x86_64.AppImage linuxdeploy-plugin-conda.sh
+
+cat > freecad.desktop <<\EOF
 [Desktop Entry]
 Version=1.0
 Name=FreeCAD
@@ -44,9 +39,6 @@ Comment[de_DE]=Feature-basierter parametrischer Modellierer
 MimeType=application/x-extension-fcstd;
 EOF
 
-./linuxdeploy-x86_64.AppImage --appdir AppDir -i AppDir/usr/conda/data/Mod/Start/StartPage/freecad.png -d AppDir/usr/share/applications/freecad.desktop --output appimage
-
-./FreeCAD-x86_64.AppImage # Works!
-
-# CONDA_CHANNELS=conda-forge is the default
+export CONDA_CHANNELS=freecad CONDA_PACKAGES=freecad
+./linuxdeploy-x86_64.AppImage --appdir AppDir -i AppDir/usr/conda/data/Mod/Start/StartPage/freecad.png -d freecad.desktop --plugin conda --output appimage
 ```
