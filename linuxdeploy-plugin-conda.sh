@@ -98,6 +98,7 @@ pushd "$APPDIR"/usr/conda
 rm -rf pkgs
 find -type d -iname '__pycache__' -print0 | xargs -0 rm -r
 find -type f -iname '*.so*' -print -exec strip '{}' \;
+find -type f -iname '*.a' -print -delete
 rm -rf lib/cmake/
 rm -rf include/
 rm -rf share/{gtk-,}doc
