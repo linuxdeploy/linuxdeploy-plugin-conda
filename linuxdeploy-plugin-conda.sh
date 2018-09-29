@@ -1,5 +1,8 @@
 #! /bin/bash
 
+# abort on all errors
+set -e
+
 script=$(readlink -f "$0")
 
 show_usage() {
