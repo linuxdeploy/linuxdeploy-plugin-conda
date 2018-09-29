@@ -8,8 +8,8 @@ show_usage() {
     echo "Bundles software available as conda packages into an AppDir"
     echo
     echo "Variables:"
-    echo "  CONDA_CHANNELS=\"channelA:channelB:...\""
-    echo "  CONDA_PACKAGES=\"packageA:packageB:...\""
+    echo "  CONDA_CHANNELS=\"channelA;channelB;...\""
+    echo "  CONDA_PACKAGES=\"packageA;packageB;...\""
 }
 
 APPDIR=
@@ -76,13 +76,13 @@ conda config --add channels conda-forge
 #conda install -y xorg-libxi
 
 # add channels specified via $CONDA_CHANNELS
-IFS=':' read -ra pkgs <<< "$CONDA_CHANNELS"
+IFS=';' read -ra pkgs <<< "$CONDA_CHANNELS"
 for chan in "${chans[@]}"; do
     conda config --add channels "$chan"
 done
 
 # install packages specified via $CONDA_PACKAGES
-IFS=':' read -ra pkgs <<< "$CONDA_PACKAGES"
+IFS=';' read -ra pkgs <<< "$CONDA_PACKAGES"
 for pkg in "${pkgs[@]}"; do
     conda install -y "$pkg"
 done
