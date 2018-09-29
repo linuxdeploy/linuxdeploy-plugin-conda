@@ -3,6 +3,10 @@
 # abort on all errors
 set -e
 
+if [ "$DEBUG" != "" ]; then
+    set -x
+fi
+
 script=$(readlink -f "$0")
 
 show_usage() {
