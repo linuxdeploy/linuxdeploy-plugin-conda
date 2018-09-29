@@ -91,7 +91,10 @@ for pkg in "${pkgs[@]}"; do
 done
 
 # install requirements from PyPI specified via $PIP_REQUIREMENTS
-pip install -U $PIP_REQUIREMENTS
+if [ "$PIP_REQUIREMENTS" != "" ]; then
+    pip install -U $PIP_REQUIREMENTS
+fi
+
 
 # create symlinks for all binaries in usr/conda/bin/ in usr/bin/
 mkdir -p "$APPDIR"/usr/bin/
