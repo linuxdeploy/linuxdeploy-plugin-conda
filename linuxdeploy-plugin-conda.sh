@@ -96,7 +96,15 @@ done
 
 # install requirements from PyPI specified via $PIP_REQUIREMENTS
 if [ "$PIP_REQUIREMENTS" != "" ]; then
+    if [ "$PIP_WORKDIR" != "" ]; then
+        pushd "$PIP_WORKDIR"
+    fi
+    
     pip install -U $PIP_REQUIREMENTS
+    
+    if [ "$PIP_WORKDIR" != "" ]; then
+        popd
+    fi
 fi
 
 
