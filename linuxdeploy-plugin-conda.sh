@@ -87,10 +87,8 @@ for pkg in "${pkgs[@]}"; do
     conda install -y "$pkg"
 done
 
-# install packages specified via $PIP_PACKAGES
-pip_pkgs=()
-IFS=';' read -ra pkgs <<< "$PIP_PACKAGES"
-pip install -U "${pkgs[@]}"
+# install requirements from PyPI specified via $PIP_REQUIREMENTS
+pip install -U $PIP_REQUIREMENTS
 
 # create symlinks for all binaries in usr/conda/bin/ in usr/bin/
 mkdir -p "$APPDIR"/usr/bin/
