@@ -99,14 +99,18 @@ if [ "$PIP_REQUIREMENTS" != "" ]; then
     if [ "$PIP_WORKDIR" != "" ]; then
         pushd "$PIP_WORKDIR"
     fi
-    
-    pip install -U $PIP_REQUIREMENTS
-    
+
+    pip_args=()
+    if [ "$PIP_VERBOSE" != "" ]; then
+        pip_args+=("-v")
+    fi
+
+    pip install -U $PIP_REQUIREMENTS "${pip_args[@]}"
+
     if [ "$PIP_WORKDIR" != "" ]; then
         popd
     fi
 fi
-
 
 # create symlinks for all binaries in usr/conda/bin/ in usr/bin/
 mkdir -p "$APPDIR"/usr/bin/
