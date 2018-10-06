@@ -66,6 +66,11 @@ _cleanup() {
 
 trap _cleanup EXIT
 
+if [ -d "$APPDIR"/usr/conda ]; then
+    echo "Error: directory exists: $APPDIR/usr/conda"
+    exit 1
+fi
+
 # install Miniconda, a self contained Python distribution, into AppDir
 (cd "$TMPDIR" && wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh)
 
