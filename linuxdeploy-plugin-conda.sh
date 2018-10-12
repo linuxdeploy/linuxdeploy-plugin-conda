@@ -17,6 +17,7 @@ show_usage() {
     echo "Variables:"
     echo "  CONDA_CHANNELS=\"channelA;channelB;...\""
     echo "  CONDA_PACKAGES=\"packageA;packageB;...\""
+    echo "  CONDA_PYTHON_VERSION=\"3.6\""
 }
 
 APPDIR=
@@ -79,7 +80,12 @@ fi
 bash "$TMPDIR"/Miniconda3-latest-Linux-x86_64.sh -b -p "$APPDIR"/usr/conda -f
 
 # activate environment
-. "$APPDIR"/usr/conda/bin/activate
+if [ "$CONDA_PYTHON_VERSION" != "" ]; then
+    "$APPDIR"/usr/conda/bin/conda create -n linuxdeploy-env --python="$CONDA_PYTHON_VERSION"
+    . "$APPDIR"/usr/conda/bin/activate linuxdeploy-env
+else
+    . "$APPDIR"/usr/conda/bin/activate
+fi
 
 # conda-forge is used by many conda packages, therefore we'll add that channel by default
 conda config --add channels conda-forge
