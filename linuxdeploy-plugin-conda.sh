@@ -79,13 +79,17 @@ fi
 # interfere with libraries bundled by other plugins or linuxdeploy itself
 bash "$TMPDIR"/Miniconda3-latest-Linux-x86_64.sh -b -p "$APPDIR"/usr/conda -f
 
-# activate environment
+# create non-default env if requested
 if [ "$CONDA_PYTHON_VERSION" != "" ]; then
     "$APPDIR"/usr/conda/bin/conda create -y -n linuxdeploy-env python="$CONDA_PYTHON_VERSION"
-    . "$APPDIR"/usr/conda/bin/activate linuxdeploy-env
-else
-    . "$APPDIR"/usr/conda/bin/activate
+    # overwrite default env
+    rm -rf "$APPDIR"/usr/conda/lib
+    mv "$APPDIR"/usr/conda/envs/linuxdeploy-env/lib "$APPDIR"/usr/conda/lib
+    rm -rf "$APPDIR"/usr/conda/envs
 fi
+
+# activate environment
+. "$APPDIR"/usr/conda/bin/activate
 
 # conda-forge is used by many conda packages, therefore we'll add that channel by default
 conda config --add channels conda-forge
