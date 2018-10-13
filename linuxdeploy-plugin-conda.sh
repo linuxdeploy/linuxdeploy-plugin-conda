@@ -79,15 +79,6 @@ fi
 # interfere with libraries bundled by other plugins or linuxdeploy itself
 bash "$TMPDIR"/Miniconda3-latest-Linux-x86_64.sh -b -p "$APPDIR"/usr/conda -f
 
-# create non-default env if requested
-if [ "$CONDA_PYTHON_VERSION" != "" ]; then
-    "$APPDIR"/usr/conda/bin/conda create -y -n linuxdeploy-env python="$CONDA_PYTHON_VERSION"
-    # overwrite default env
-    rm -rf "$APPDIR"/usr/conda/lib
-    mv "$APPDIR"/usr/conda/envs/linuxdeploy-env/lib "$APPDIR"/usr/conda/lib
-    rm -rf "$APPDIR"/usr/conda/envs
-fi
-
 # activate environment
 . "$APPDIR"/usr/conda/bin/activate
 
@@ -96,6 +87,11 @@ conda config --add channels conda-forge
 
 # force-install libxi, required by a majority of packages on some more annoying distributions like e.g., Arch
 #conda install -y xorg-libxi
+
+# force another python version if requested
+if [ "$CONDA_PYTHON_VERSION" != "" ]; then
+    conda install -y python="$CONDA_PYTHON_VERSION"
+fi
 
 # add channels specified via $CONDA_CHANNELS
 IFS=';' read -ra pkgs <<< "$CONDA_CHANNELS"
