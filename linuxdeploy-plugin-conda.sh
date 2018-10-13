@@ -17,6 +17,7 @@ show_usage() {
     echo "Variables:"
     echo "  CONDA_CHANNELS=\"channelA;channelB;...\""
     echo "  CONDA_PACKAGES=\"packageA;packageB;...\""
+    echo "  CONDA_PYTHON_VERSION=\"3.6\""
 }
 
 APPDIR=
@@ -86,6 +87,11 @@ conda config --add channels conda-forge
 
 # force-install libxi, required by a majority of packages on some more annoying distributions like e.g., Arch
 #conda install -y xorg-libxi
+
+# force another python version if requested
+if [ "$CONDA_PYTHON_VERSION" != "" ]; then
+    conda install -y python="$CONDA_PYTHON_VERSION"
+fi
 
 # add channels specified via $CONDA_CHANNELS
 IFS=';' read -ra pkgs <<< "$CONDA_CHANNELS"
