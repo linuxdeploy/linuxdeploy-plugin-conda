@@ -81,7 +81,7 @@ bash "$TMPDIR"/Miniconda3-latest-Linux-x86_64.sh -b -p "$APPDIR"/usr/conda -f
 
 # activate environment
 if [ "$CONDA_PYTHON_VERSION" != "" ]; then
-    "$APPDIR"/usr/conda/bin/conda create -n linuxdeploy-env python="$CONDA_PYTHON_VERSION"
+    "$APPDIR"/usr/conda/bin/conda create -y -n linuxdeploy-env python="$CONDA_PYTHON_VERSION"
     . "$APPDIR"/usr/conda/bin/activate linuxdeploy-env
 else
     . "$APPDIR"/usr/conda/bin/activate
