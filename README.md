@@ -6,7 +6,10 @@ Python plugin for linuxdeploy. Sets up miniconda inside an AppDir, and installs 
 ## Usage
 
 ```bash
+# get linuxdeploy and linuxdeploy-plugin-conda (see below for more information)
+# configure environment variables which control the plugin's behavior
 > export CONDA_CHANNELS=mychannel;myotherchannel CONDA_PACKAGES=mypackage;myotherpackage
+# call through linuxdeploy
 > ./linuxdeploy-x86_64.AppImage --appdir AppDir --plugin conda --output appimage --icon mypackage.png --desktop-file mypackage.desktop
 ```
 
