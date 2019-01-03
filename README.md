@@ -45,3 +45,7 @@ EOF
 export CONDA_CHANNELS=freecad CONDA_PACKAGES=freecad
 ./linuxdeploy-x86_64.AppImage --appdir AppDir -i AppDir/usr/conda/data/Mod/Start/StartPage/freecad.png -d freecad.desktop --plugin conda --output appimage
 ```
+
+## Projects using linuxdeploy-plugin-conda
+
+[Projects on GitHub that are using linuxdeploy-plugin-conda](https://github.com/search?l=Shell&q=linuxdeploy-plugin-conda&type=Code)
