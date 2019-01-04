@@ -82,6 +82,12 @@ bash "$TMPDIR"/Miniconda3-latest-Linux-x86_64.sh -b -p "$APPDIR"/usr/conda -f
 # activate environment
 . "$APPDIR"/usr/conda/bin/activate
 
+# Workaround for SIP bug
+# https://github.com/wbsoft/python-poppler-qt5/issues/14#issuecomment-432259057
+wget -c https://www.riverbankcomputing.com/hg/sip/raw-file/tip/sipdistutils.py
+mv sipdistutils.py $(readlink -f "$APPDIR"/usr/conda/lib/python*/site-packages/ | head -n 1)
+
+
 # conda-forge is used by many conda packages, therefore we'll add that channel by default
 conda config --add channels conda-forge
 
