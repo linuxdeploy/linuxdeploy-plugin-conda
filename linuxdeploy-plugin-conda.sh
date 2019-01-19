@@ -111,7 +111,7 @@ if [ "$PIP_REQUIREMENTS" != "" ]; then
         pushd "$PIP_WORKDIR"
     fi
 
-    pip_args=()
+    pip_args=('--prefix="$APPDIR"/usr/conda/')
     if [ "$PIP_VERBOSE" != "" ]; then
         pip_args+=("-v")
     fi
