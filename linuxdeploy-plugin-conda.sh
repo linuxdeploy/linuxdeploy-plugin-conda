@@ -112,7 +112,7 @@ if [ "$PIP_REQUIREMENTS" != "" ]; then
     fi
 
     # add verbose flag if requested
-    pip install -U "$PIP_REQUIREMENTS" --prefix="$APPDIR"/usr/conda/ "${PIP_VERBOSE:+-v}"
+    pip install -U $PIP_REQUIREMENTS --prefix="$APPDIR"/usr/conda/ ${PIP_VERBOSE:+-v}
 
 
     if [ "$PIP_WORKDIR" != "" ]; then
