@@ -111,12 +111,9 @@ if [ "$PIP_REQUIREMENTS" != "" ]; then
         pushd "$PIP_WORKDIR"
     fi
 
-    pip_args=('--prefix="$APPDIR"/usr/conda/')
-    if [ "$PIP_VERBOSE" != "" ]; then
-        pip_args+=("-v")
-    fi
+    # add verbose flag if requested
+    pip install -U $PIP_REQUIREMENTS --prefix="$APPDIR"/usr/conda/ ${PIP_VERBOSE:+-v}
 
-    pip install -U $PIP_REQUIREMENTS "${pip_args[@]}"
 
     if [ "$PIP_WORKDIR" != "" ]; then
         popd
