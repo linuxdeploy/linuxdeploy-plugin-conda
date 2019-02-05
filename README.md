@@ -13,6 +13,9 @@ Python plugin for linuxdeploy. Sets up miniconda inside an AppDir, and installs 
 > ./linuxdeploy-x86_64.AppImage --appdir AppDir --plugin conda --output appimage --icon mypackage.png --desktop-file mypackage.desktop
 ```
 
+There are many variables available to alter the behavior of the plugin. The current list can be obtained by calling the plugin with `--help`.
+
+
 ## Example
 
 This generates a working FreeCAD AppImage from Conda ingredients, including Qt and PyQt:
