@@ -18,6 +18,8 @@ show_usage() {
     echo "  CONDA_CHANNELS=\"channelA;channelB;...\""
     echo "  CONDA_PACKAGES=\"packageA;packageB;...\""
     echo "  CONDA_PYTHON_VERSION=\"3.6\""
+    echo "  PIP_REQUIREMENTS=\"packageA packageB -r requirements.txt -e git+https://...\""
+    echo "  PIP_PREFIX=\"AppDir/usr/share/conda\""
 }
 
 APPDIR=
@@ -111,9 +113,7 @@ if [ "$PIP_REQUIREMENTS" != "" ]; then
         pushd "$PIP_WORKDIR"
     fi
 
-    # add verbose flag if requested
-    pip install -U $PIP_REQUIREMENTS --prefix="$APPDIR"/usr/conda/ ${PIP_VERBOSE:+-v}
-
+    pip install -U $PIP_REQUIREMENTS ${PIP_PREFIX:+--prefix=$PIP_PREFIX} ${PIP_VERBOSE:+-v}
 
     if [ "$PIP_WORKDIR" != "" ]; then
         popd
