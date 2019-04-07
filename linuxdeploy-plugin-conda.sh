@@ -136,5 +136,6 @@ rm -rf lib/cmake/
 rm -rf include/
 rm -rf share/{gtk-,}doc
 rm -rf share/man
-rm -rf lib/python?.?/site-packages/setuptools
+rm -rf lib/python?.?/site-packages/{setuptools,pip}
+rm -rf lib/python?.?/distutils
 popd
