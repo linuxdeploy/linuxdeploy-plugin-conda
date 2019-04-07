@@ -135,3 +135,6 @@ find -type f -iname '*.a' -print -delete
 rm -rf lib/cmake/
 rm -rf include/
 rm -rf share/{gtk-,}doc
+rm -rf share/man
+rm -rf lib/
+popd
