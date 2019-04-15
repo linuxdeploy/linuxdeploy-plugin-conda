@@ -96,7 +96,7 @@ if [ "$CONDA_PYTHON_VERSION" != "" ]; then
 fi
 
 # add channels specified via $CONDA_CHANNELS
-IFS=';' read -ra pkgs <<< "$CONDA_CHANNELS"
+IFS=';' read -ra chans <<< "$CONDA_CHANNELS"
 for chan in "${chans[@]}"; do
     conda config --add channels "$chan"
 done
