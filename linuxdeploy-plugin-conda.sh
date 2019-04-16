@@ -84,6 +84,9 @@ bash "$TMPDIR"/Miniconda3-latest-Linux-x86_64.sh -b -p "$APPDIR"/usr/conda -f
 # activate environment
 . "$APPDIR"/usr/conda/bin/activate
 
+# we don't want to use the system's conda RC file
+export CONDARC=/dev/null
+
 # conda-forge is used by many conda packages, therefore we'll add that channel by default
 conda config --add channels conda-forge
 
