@@ -102,7 +102,7 @@ fi
 # add channels specified via $CONDA_CHANNELS
 IFS=';' read -ra chans <<< "$CONDA_CHANNELS"
 for chan in "${chans[@]}"; do
-    conda config --add channels "$chan"
+    conda config --append channels "$chan"
 done
 
 # install packages specified via $CONDA_PACKAGES
