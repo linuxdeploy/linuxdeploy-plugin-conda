@@ -20,6 +20,7 @@ show_usage() {
     echo "  CONDA_PYTHON_VERSION=\"3.6\""
     echo "  PIP_REQUIREMENTS=\"packageA packageB -r requirements.txt -e git+https://...\""
     echo "  PIP_PREFIX=\"AppDir/usr/share/conda\""
+    echo "  BLOAT_REMOVE_SKIP=\"setuptools;pip\""
 }
 
 APPDIR=
@@ -130,6 +131,9 @@ for i in "$APPDIR"/usr/conda/bin/*; do
     ln -s -r "$i" "$APPDIR"/usr/bin/
 done
 
+# get whitelist of bloat to not remove for this package
+IFS=';' read -ra bloatskip <<< "$BLOAT_REMOVE_SKIP"
+
 # remove bloat
 pushd "$APPDIR"/usr/conda
 rm -rf pkgs
@@ -140,6 +144,29 @@ rm -rf lib/cmake/
 rm -rf include/
 rm -rf share/{gtk-,}doc
 rm -rf share/man
-rm -rf lib/python?.?/site-packages/{setuptools,pip}
-rm -rf lib/python?.?/distutils
+
+# remove setuptools unless whitelisted
+for entry in "${bloatskip[@]}"; do
+    if [ "$entry" == "setuptools" ]; then
+        break
+    fi
+    rm -rf lib/python?.?/site-packages/setuptools
+done
+
+# remove pip unless whitelisted
+for entry in "${bloatskip[@]}"; do
+    if [ "$entry" == "pip" ]; then
+        break
+    fi
+    rm -rf lib/python?.?/site-packages/pip
+done
+
+# remove distutils unless whitelisted
+for entry in "${bloatskip[@]}"; do
+    if [ "$entry" == "distutils" ]; then
+        break
+    fi
+    rm -rf lib/python?.?/distutils
+done
+
 popd
