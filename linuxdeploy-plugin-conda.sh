@@ -126,9 +126,12 @@ fi
 
 # create symlinks for all binaries in usr/conda/bin/ in usr/bin/
 mkdir -p "$APPDIR"/usr/bin/
-for i in "$APPDIR"/usr/conda/bin/*; do
-    ln -s -r "$i" "$APPDIR"/usr/bin/
+pushd "$APPDIR"
+for i in usr/conda/bin/*; do
+    ln -s ../../"$i" usr/bin/
 done
+popd
+
 
 # remove bloat
 pushd "$APPDIR"/usr/conda
