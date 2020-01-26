@@ -20,6 +20,7 @@ show_usage() {
     echo "  CONDA_PYTHON_VERSION=\"3.6\""
     echo "  PIP_REQUIREMENTS=\"packageA packageB -r requirements.txt -e git+https://...\""
     echo "  PIP_PREFIX=\"AppDir/usr/share/conda\""
+    echo "  ARCH=\"x86_64\" (further supported values: i686)"
 }
 
 APPDIR=
@@ -74,12 +75,27 @@ if [ -d "$APPDIR"/usr/conda ]; then
     exit 1
 fi
 
+ARCH=${ARCH:-x86_64}
+
 # install Miniconda, a self contained Python distribution, into AppDir
-(cd "$TMPDIR" && wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh)
+case "$ARCH" in
+    "x86_64")
+        miniconda_url=https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+        ;;
+    "i386"|"i686")
+        miniconda_url=https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86.sh
+        ;;
+    *)
+        echo "Error: Unknown Miniconda arch: $ARCH"
+        exit 1
+        ;;
+esac
+
+(cd "$TMPDIR" && wget "$miniconda_url")
 
 # install into usr/conda/ instead of usr/ to make sure that the libraries shipped with conda don't overwrite or
 # interfere with libraries bundled by other plugins or linuxdeploy itself
-bash "$TMPDIR"/Miniconda3-latest-Linux-x86_64.sh -b -p "$APPDIR"/usr/conda -f
+bash "$TMPDIR"/Miniconda3-latest-Linux-*.sh -b -p "$APPDIR"/usr/conda -f
 
 # activate environment
 . "$APPDIR"/usr/conda/bin/activate
