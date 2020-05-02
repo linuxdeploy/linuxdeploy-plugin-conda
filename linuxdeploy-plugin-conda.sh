@@ -23,6 +23,13 @@ show_usage() {
     echo "  ARCH=\"x86_64\" (further supported values: i686)"
 }
 
+log() {
+    tput setaf 3
+    tput bold
+    echo -*- "$@"
+    tput sgr0
+}
+
 APPDIR=
 
 while [ "$1" != "" ]; do
@@ -41,8 +48,8 @@ while [ "$1" != "" ]; do
             exit 0
             ;;
         *)
-            echo "Invalid argument: $1"
-            echo
+            log "Invalid argument: $1"
+            log
             show_usage
             exit 1
             ;;
@@ -57,7 +64,7 @@ fi
 mkdir -p "$APPDIR"
 
 if [ "$CONDA_PACKAGES" == "" ]; then
-    echo "WARNING: \$CONDA_PACKAGES not set, no packages will be installed!"
+    log "WARNING: \$CONDA_PACKAGES not set, no packages will be installed!"
 fi
 
 # the user can specify a directory into which the conda installer is downloaded
@@ -69,14 +76,14 @@ if [ "$CONDA_DOWNLOAD_DIR" != "" ]; then
         CONDA_DOWNLOAD_DIR="$(readlink -f "$CONDA_DOWNLOAD_DIR")"
     fi
 
-    echo "Using user-specified download directory: $CONDA_DOWNLOAD_DIR"
+    log "Using user-specified download directory: $CONDA_DOWNLOAD_DIR"
     mkdir -p "$CONDA_DOWNLOAD_DIR"
 else
     # create temporary directory into which downloaded files are put
     CONDA_DOWNLOAD_DIR="$(mktemp -d)"
 
     _cleanup() {
-        if [ -d "$CONDA_DOWNLOAD_DIR"]; then
+        if [ -d "$CONDA_DOWNLOAD_DIR" ]; then
             rm -rf "$CONDA_DOWNLOAD_DIR"
         fi
     }
@@ -85,8 +92,8 @@ else
 fi
 
 if [ -d "$APPDIR"/usr/conda ]; then
-    echo "Warning: conda prefix directory exists: $APPDIR/usr/conda"
-    echo "Please make sure you perform a clean build before releases to make sure your process works properly."
+    log "WARNING: conda prefix directory exists: $APPDIR/usr/conda"
+    log "Please make sure you perform a clean build before releases to make sure your process works properly."
 fi
 
 ARCH=${ARCH:-x86_64}
@@ -100,7 +107,7 @@ case "$ARCH" in
         miniconda_installer_filename=Miniconda3-latest-Linux-x86.sh
         ;;
     *)
-        echo "Error: Unknown Miniconda arch: $ARCH"
+        log "ERROR: Unknown Miniconda arch: $ARCH"
         exit 1
         ;;
 esac
@@ -162,7 +169,7 @@ mkdir -p "$APPDIR"/usr/bin/
 pushd "$APPDIR"
 for i in usr/conda/bin/*; do
     if [ -f usr/bin/"$(basename "$i")" ]; then
-        echo "Warning: symlink exists, will not be touched: usr/bin/$i"
+        log "WARNING: symlink exists, will not be touched: usr/bin/$i"
     else
         ln -s ../../"$i" usr/bin/
     fi
