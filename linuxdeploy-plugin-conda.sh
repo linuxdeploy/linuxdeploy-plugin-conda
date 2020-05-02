@@ -85,8 +85,8 @@ else
 fi
 
 if [ -d "$APPDIR"/usr/conda ]; then
-    echo "Error: directory exists: $APPDIR/usr/conda"
-    exit 1
+    echo "Warning: conda prefix directory exists: $APPDIR/usr/conda"
+    echo "Please make sure you perform a clean build before releases to make sure your process works properly."
 fi
 
 ARCH=${ARCH:-x86_64}
@@ -118,7 +118,7 @@ bash "$CONDA_DOWNLOAD_DIR"/"$miniconda_installer_filename" -b -p "$APPDIR"/usr/c
 . "$APPDIR"/usr/conda/bin/activate
 
 # we don't want to touch the system, therefore using a temporary home
-mkdir _temp_home
+mkdir -p _temp_home
 export HOME=$(readlink -f _temp_home)
 
 # conda-forge is used by many conda packages, therefore we'll add that channel by default
@@ -161,7 +161,11 @@ fi
 mkdir -p "$APPDIR"/usr/bin/
 pushd "$APPDIR"
 for i in usr/conda/bin/*; do
-    ln -s ../../"$i" usr/bin/
+    if [ -f usr/bin/"$(basename "$i")" ]; then
+        echo "Warning: symlink exists, will not be touched: usr/bin/$i"
+    else
+        ln -s ../../"$i" usr/bin/
+    fi
 done
 popd
 
