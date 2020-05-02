@@ -16,6 +16,26 @@ Python plugin for linuxdeploy. Sets up miniconda inside an AppDir, and installs 
 There are many variables available to alter the behavior of the plugin. The current list can be obtained by calling the plugin with `--help`.
 
 
+## Customize caching behavior
+
+By default, linuxdeploy-plugin-conda redownloads the miniconda installer on every execution. This is not an issue for most people, as the installers are only 50-80 MiB in size. However, it is usually not necessary to redownload the file every time, especially while developing scripts based on the conda plugin.
+
+Therefore, you can set a custom directory via the environment variable `$CONDA_DOWNLOAD_DIR`, into which downloaded files are stored then. The plugin makes use of some `wget` parameters to ensure that the file is only downloaded when it is incomplete (`-c`) or there is a newer version available (`-N`).
+
+Example:
+
+```bash
+> export CONDA_DOWNLOAD_DIR=/my/own/directory
+> ./linuxdeploy-x86_64.AppImage --plugin conda [...]
+[...]
+Using user-specified download directory: /my/own/directory
+[...]
+```
+
+Relative paths work as well.
+
+
+
 ## Example
 
 This generates a working FreeCAD AppImage from Conda ingredients, including Qt and PyQt:

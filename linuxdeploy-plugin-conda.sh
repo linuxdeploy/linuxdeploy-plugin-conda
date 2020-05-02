@@ -60,15 +60,29 @@ if [ "$CONDA_PACKAGES" == "" ]; then
     echo "WARNING: \$CONDA_PACKAGES not set, no packages will be installed!"
 fi
 
+# the user can specify a directory into which the conda installer is downloaded
+# if they don't specify one, we use a temporary directory
+# if one is specified, the installer will not be re-downloaded unless it has changed
+if [ "$CONDA_DOWNLOAD_DIR" != "" ]; then
+    # resolve path relative to cwd
+    if [[ "$CONDA_DOWNLOAD_DIR" != /* ]]; then
+        CONDA_DOWNLOAD_DIR="$(readlink -f "$CONDA_DOWNLOAD_DIR")"
+    fi
 
-# create temporary directory into which downloaded files are put
-TMPDIR=$(mktemp -d)
+    echo "Using user-specified download directory: $CONDA_DOWNLOAD_DIR"
+    mkdir -p "$CONDA_DOWNLOAD_DIR"
+else
+    # create temporary directory into which downloaded files are put
+    CONDA_DOWNLOAD_DIR="$(mktemp -d)"
 
-_cleanup() {
-    rm -rf "$TMPDIR"
-}
+    _cleanup() {
+        if [ -d "$CONDA_DOWNLOAD_DIR"]; then
+            rm -rf "$CONDA_DOWNLOAD_DIR"
+        fi
+    }
 
-trap _cleanup EXIT
+    trap _cleanup EXIT
+fi
 
 if [ -d "$APPDIR"/usr/conda ]; then
     echo "Error: directory exists: $APPDIR/usr/conda"
@@ -80,10 +94,10 @@ ARCH=${ARCH:-x86_64}
 # install Miniconda, a self contained Python distribution, into AppDir
 case "$ARCH" in
     "x86_64")
-        miniconda_url=https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+        miniconda_installer_filename=Miniconda3-latest-Linux-x86_64.sh
         ;;
     "i386"|"i686")
-        miniconda_url=https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86.sh
+        miniconda_installer_filename=Miniconda3-latest-Linux-x86.sh
         ;;
     *)
         echo "Error: Unknown Miniconda arch: $ARCH"
@@ -91,11 +105,14 @@ case "$ARCH" in
         ;;
 esac
 
-(cd "$TMPDIR" && wget "$miniconda_url")
+pushd "$CONDA_DOWNLOAD_DIR"
+    miniconda_url=https://repo.continuum.io/miniconda/"$miniconda_installer_filename"
+    wget -N -c "$miniconda_url"
+popd
 
 # install into usr/conda/ instead of usr/ to make sure that the libraries shipped with conda don't overwrite or
 # interfere with libraries bundled by other plugins or linuxdeploy itself
-bash "$TMPDIR"/Miniconda3-latest-Linux-*.sh -b -p "$APPDIR"/usr/conda -f
+bash "$CONDA_DOWNLOAD_DIR"/"$miniconda_installer_filename" -b -p "$APPDIR"/usr/conda -f
 
 # activate environment
 . "$APPDIR"/usr/conda/bin/activate
@@ -162,3 +179,4 @@ if [ "$CONDA_SKIP_CLEANUP" == "" ]; then
     rm -rf lib/python?.?/site-packages/{setuptools,pip}
     popd
 fi
+
