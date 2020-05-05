@@ -68,7 +68,8 @@ if [ "$CONDA_PACKAGES" == "" ]; then
 fi
 
 # the user can specify a directory into which the conda installer is downloaded
-# if they don't specify one, we use a temporary directory
+# if they don't specify one, we use a temporary directory with a predictable name to preserve downloaded files across runs
+# this should reduce the download overhead
 # if one is specified, the installer will not be re-downloaded unless it has changed
 if [ "$CONDA_DOWNLOAD_DIR" != "" ]; then
     # resolve path relative to cwd
@@ -77,19 +78,15 @@ if [ "$CONDA_DOWNLOAD_DIR" != "" ]; then
     fi
 
     log "Using user-specified download directory: $CONDA_DOWNLOAD_DIR"
-    mkdir -p "$CONDA_DOWNLOAD_DIR"
 else
     # create temporary directory into which downloaded files are put
-    CONDA_DOWNLOAD_DIR="$(mktemp -d)"
+    CONDA_DOWNLOAD_DIR="/tmp/linuxdeploy-plugin-conda-$(whoami)"
 
-    _cleanup() {
-        if [ -d "$CONDA_DOWNLOAD_DIR" ]; then
-            rm -rf "$CONDA_DOWNLOAD_DIR"
-        fi
-    }
-
-    trap _cleanup EXIT
+    log "Using default temporary download directory: $CONDA_DOWNLOAD_DIR"
 fi
+
+# make sure the directory exists
+mkdir -p "$CONDA_DOWNLOAD_DIR"
 
 if [ -d "$APPDIR"/usr/conda ]; then
     log "WARNING: conda prefix directory exists: $APPDIR/usr/conda"
@@ -114,7 +111,9 @@ esac
 
 pushd "$CONDA_DOWNLOAD_DIR"
     miniconda_url=https://repo.continuum.io/miniconda/"$miniconda_installer_filename"
-    wget -N -c "$miniconda_url"
+    # let's make sure the file exists before we then rudimentarily ensure mutual exclusive access to it with flock
+    touch "$miniconda_installer_filename"
+    flock "$miniconda_installer_filename" wget -N -c "$miniconda_url"
 popd
 
 # install into usr/conda/ instead of usr/ to make sure that the libraries shipped with conda don't overwrite or
