@@ -112,7 +112,10 @@ esac
 pushd "$CONDA_DOWNLOAD_DIR"
     miniconda_url=https://repo.continuum.io/miniconda/"$miniconda_installer_filename"
     # let's make sure the file exists before we then rudimentarily ensure mutual exclusive access to it with flock
-    touch "$miniconda_installer_filename"
+    # we set the timestamp to epoch 0; this should likely trigger a redownload for the first time
+    touch "$miniconda_installer_filename" -d '@0'
+
+    # now, let's download the file
     flock "$miniconda_installer_filename" wget -N -c "$miniconda_url"
 popd
 
