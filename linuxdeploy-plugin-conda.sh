@@ -32,6 +32,7 @@ log() {
     _isterm && tput bold
     echo -*- "$@"
     _isterm && tput sgr0
+    return 0
 }
 
 APPDIR=
