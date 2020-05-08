@@ -24,10 +24,10 @@ show_usage() {
 }
 
 log() {
-    tput setaf 3
-    tput bold
+    [[ "$TERM" != "" ]] && tput setaf 3
+    [[ "$TERM" != "" ]] && tput bold
     echo -*- "$@"
-    tput sgr0
+    [[ "$TERM" != "" ]] && tput sgr0
 }
 
 APPDIR=
