@@ -23,11 +23,15 @@ show_usage() {
     echo "  ARCH=\"x86_64\" (further supported values: i686)"
 }
 
+isterm() {
+    return [[ "$TERM" != "" ]];
+}
+
 log() {
-    [[ "$TERM" != "" ]] && tput setaf 3
-    [[ "$TERM" != "" ]] && tput bold
+    _isterm && tput setaf 3
+    _isterm && tput bold
     echo -*- "$@"
-    [[ "$TERM" != "" ]] && tput sgr0
+    _isterm && tput sgr0
 }
 
 APPDIR=
