@@ -23,8 +23,8 @@ show_usage() {
     echo "  ARCH=\"x86_64\" (further supported values: i686)"
 }
 
-isterm() {
-    return [[ "$TERM" != "" ]];
+_isterm() {
+    tty -s && [[ "$TERM" != "" ]] && tput colors &>/dev/null
 }
 
 log() {
