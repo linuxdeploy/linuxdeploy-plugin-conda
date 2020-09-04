@@ -21,6 +21,7 @@ show_usage() {
     echo "  PIP_REQUIREMENTS=\"packageA packageB -r requirements.txt -e git+https://...\""
     echo "  PIP_PREFIX=\"AppDir/usr/share/conda\""
     echo "  ARCH=\"x86_64\" (further supported values: i686)"
+    echo "  CONDA_SKIP_CLEANUP=\"[all;][conda-pkgs;][__pycache__;][.so;][.a;][cmake;][doc;][man;][site-packages;]\""
 }
 
 _isterm() {
@@ -184,17 +185,59 @@ done
 popd
 
 
-# remove bloat
-if [ "$CONDA_SKIP_CLEANUP" == "" ]; then
+# remove bloat, optionally skipped via $CONDA_SKIP_CLEANUP
+IFS=';' read -ra cleanup <<< "$CONDA_SKIP_CLEANUP"
+for skip in "${cleanup[@]}"; do
+    lskip="$(tr '[:upper:]' '[:lower:]' <<< "$skip")"
+    case "$lskip" in
+        "all"| \
+        "1"|"true"|"y"|"yes")  # To allow SOME backward compatibility - versions previous
+                               # to this comment allowed any value of $CONDA_SKIP_CLEANUP.
+            skip_cleanup=1
+            ;;
+        "conda-pkgs")
+            skip_conda_pkgs_cleanup=1
+            ;;
+        "__pycache__")
+            skip_pycache_cleanup=1
+            ;;
+        ".so")
+            skip_so_cleanup=1
+            ;;
+        ".a")
+            skip_a_cleanup=1
+            ;;
+        "cmake")
+            skip_cmake_cleanup=1
+            ;;
+        "doc")
+            skip_doc_cleanup=1
+            ;;
+        "man")
+            skip_man_cleanup=1
+            ;;
+        "site-packages")
+            skip_site_packages_cleanup=1
+            ;;
+        *)
+            log "ERROR: Unknown CONDA_SKIP_CLEANUP value: $skip"
+            log
+            show_usage
+            exit 1
+            ;;
+    esac
+done
+
+if [ "$skip_cleanup" != "1" ]; then
     pushd "$APPDIR"/usr/conda
-    rm -rf pkgs
-    find -type d -iname '__pycache__' -print0 | xargs -0 rm -r
-    find -type f -iname '*.so*' -print -exec strip '{}' \;
-    find -type f -iname '*.a' -print -delete
-    rm -rf lib/cmake/
-    rm -rf share/{gtk-,}doc
-    rm -rf share/man
-    rm -rf lib/python?.?/site-packages/{setuptools,pip}
+    (($skip_conda_pkgs_cleanup)) || rm -rf pkgs
+    (($skip_pycache_cleanup)) || find -type d -iname '__pycache__' -print0 | xargs -0 rm -r
+    (($skip_so_cleanup)) || find -type f -iname '*.so*' -print -exec strip '{}' \;
+    (($skip_a_cleanup)) || find -type f -iname '*.a' -print -delete
+    (($skip_cmake_cleanup)) || rm -rf lib/cmake/
+    (($skip_doc_cleanup)) || rm -rf share/{gtk-,}doc
+    (($skip_man_cleanup)) || rm -rf share/man
+    (($skip_site_packages_cleanup)) || rm -rf lib/python?.?/site-packages/{setuptools,pip}
     popd
 fi
 
