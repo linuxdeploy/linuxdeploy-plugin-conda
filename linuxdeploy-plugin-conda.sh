@@ -115,7 +115,7 @@ case "$ARCH" in
 esac
 
 pushd "$CONDA_DOWNLOAD_DIR"
-    miniconda_url=https://repo.continuum.io/miniconda/"$miniconda_installer_filename"
+    miniconda_url=https://repo.anaconda.com/miniconda/"$miniconda_installer_filename"
     # let's make sure the file exists before we then rudimentarily ensure mutual exclusive access to it with flock
     # we set the timestamp to epoch 0; this should likely trigger a redownload for the first time
     touch "$miniconda_installer_filename" -d '@0'
