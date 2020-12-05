@@ -21,7 +21,7 @@ show_usage() {
     echo "  PIP_REQUIREMENTS=\"packageA packageB -r requirements.txt -e git+https://...\""
     echo "  PIP_PREFIX=\"AppDir/usr/share/conda\""
     echo "  ARCH=\"x86_64\" (further supported values: i686)"
-    echo "  CONDA_SKIP_CLEANUP=\"[all;][conda-pkgs;][__pycache__;][.so;][.a;][cmake;][doc;][man;][site-packages;]\""
+    echo "  CONDA_SKIP_CLEANUP=\"[all;][conda-pkgs;][__pycache__;][strip;][.a;][cmake;][doc;][man;][site-packages;]\""
 }
 
 _isterm() {
@@ -201,8 +201,8 @@ for skip in "${cleanup[@]}"; do
         "__pycache__")
             skip_pycache_cleanup=1
             ;;
-        ".so")
-            skip_so_cleanup=1
+        "strip")
+            skip_strip_cleanup=1
             ;;
         ".a")
             skip_a_cleanup=1
@@ -232,7 +232,7 @@ if [ "$skip_cleanup" != "1" ]; then
     pushd "$APPDIR"/usr/conda
     (($skip_conda_pkgs_cleanup)) || rm -rf pkgs
     (($skip_pycache_cleanup)) || find -type d -iname '__pycache__' -print0 | xargs -0 rm -r
-    (($skip_so_cleanup)) || find -type f -iname '*.so*' -print -exec strip '{}' \;
+    (($skip_strip_cleanup)) || find -type f -iname '*.so*' -print -exec strip '{}' \;
     (($skip_a_cleanup)) || find -type f -iname '*.a' -print -delete
     (($skip_cmake_cleanup)) || rm -rf lib/cmake/
     (($skip_doc_cleanup)) || rm -rf share/{gtk-,}doc
