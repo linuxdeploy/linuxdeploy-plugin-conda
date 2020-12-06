@@ -159,6 +159,9 @@ for pkg in "${pkgs[@]}"; do
     conda install -y "$pkg"
 done
 
+# make sure pip is up to date
+pip install -U pip
+
 # install requirements from PyPI specified via $PIP_REQUIREMENTS
 if [ "$PIP_REQUIREMENTS" != "" ]; then
     if [ "$PIP_WORKDIR" != "" ]; then
