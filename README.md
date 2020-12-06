@@ -16,6 +16,24 @@ Python plugin for linuxdeploy. Sets up miniconda inside an AppDir, and installs 
 There are many variables available to alter the behavior of the plugin. The current list can be obtained by calling the plugin with `--help`.
 
 
+### Cross-compiling/cross-building for `i[3-6]86` (Intel 32-bit)
+
+You can cross-build native extensions for `i[3-6]86` by installing a 32-bit compiler and instructing distutils to use those.
+
+On Debian, Ubuntu and other derivatives:
+
+```sh
+sudo apt-get install -y gcc-multilib g++-multilib
+export ARCH=i386 CC="gcc -m32" CXX="g++ -m32" LDSHARED="gcc -m32 -shared -pthread"
+```
+
+If your system doesn't provide multilib compilers, wrappers like `i686-linux-gnu-gcc` also work fine.
+
+**Note:** It's very important to also overwrite `LDSHARED`!
+
+See https://stackoverflow.com/a/47711430 for more information.
+
+
 ## Customize caching behavior
 
 By default, linuxdeploy-plugin-conda redownloads the miniconda installer on every execution. This is not an issue for most people, as the installers are only 50-80 MiB in size. However, it is usually not necessary to redownload the file every time, especially while developing scripts based on the conda plugin.
