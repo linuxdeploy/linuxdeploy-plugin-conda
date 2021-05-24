@@ -86,7 +86,7 @@ if [ "$CONDA_DOWNLOAD_DIR" != "" ]; then
     log "Using user-specified download directory: $CONDA_DOWNLOAD_DIR"
 else
     # create temporary directory into which downloaded files are put
-    CONDA_DOWNLOAD_DIR="/tmp/linuxdeploy-plugin-conda-$(whoami)"
+    CONDA_DOWNLOAD_DIR="/tmp/linuxdeploy-plugin-conda-$(id -u)"
 
     log "Using default temporary download directory: $CONDA_DOWNLOAD_DIR"
 fi
