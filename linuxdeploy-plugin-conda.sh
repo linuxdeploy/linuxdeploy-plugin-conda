@@ -9,6 +9,8 @@ fi
 
 script=$(readlink -f "$0")
 
+ARCH="${ARCH:-"$(uname -m)"}"
+
 show_usage() {
     echo "Usage: $script --appdir <path to AppDir>"
     echo
@@ -20,7 +22,7 @@ show_usage() {
     echo "  CONDA_PYTHON_VERSION=\"3.6\""
     echo "  PIP_REQUIREMENTS=\"packageA packageB -r requirements.txt -e git+https://...\""
     echo "  PIP_PREFIX=\"AppDir/usr/share/conda\""
-    echo "  ARCH=\"x86_64\" (further supported values: i686)"
+    echo "  ARCH=\"$ARCH\" (supported values: x86_64, i368, i686)"
     echo "  CONDA_SKIP_CLEANUP=\"[all;][conda-pkgs;][__pycache__;][strip;][.a;][cmake;][doc;][man;][site-packages;]\""
 }
 
@@ -98,8 +100,6 @@ if [ -d "$APPDIR"/usr/conda ]; then
     log "WARNING: conda prefix directory exists: $APPDIR/usr/conda"
     log "Please make sure you perform a clean build before releases to make sure your process works properly."
 fi
-
-ARCH=${ARCH:-x86_64}
 
 # install Miniconda, a self contained Python distribution, into AppDir
 case "$ARCH" in
