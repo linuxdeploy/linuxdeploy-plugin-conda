@@ -158,7 +158,7 @@ done
 
 # make sure pip is up to date
 "$APPDIR"/usr/conda/bin/python -m ensurepip
-"$APPDIR"/usr/conda/bin/pip install -U pip
+"$APPDIR"/usr/conda/bin/python -m pip install -U pip
 
 # install requirements from PyPI specified via $PIP_REQUIREMENTS
 if [ "$PIP_REQUIREMENTS" != "" ]; then
@@ -166,7 +166,7 @@ if [ "$PIP_REQUIREMENTS" != "" ]; then
         pushd "$PIP_WORKDIR"
     fi
 
-    "$APPDIR"/usr/conda/bin/pip install -U $PIP_REQUIREMENTS ${PIP_PREFIX:+--prefix=$PIP_PREFIX} ${PIP_VERBOSE:+-v}
+    "$APPDIR"/usr/conda/bin/python -m pip install -U $PIP_REQUIREMENTS ${PIP_PREFIX:+--prefix=$PIP_PREFIX} ${PIP_VERBOSE:+-v}
 
     if [ "$PIP_WORKDIR" != "" ]; then
         popd
