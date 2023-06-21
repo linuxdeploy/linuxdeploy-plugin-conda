@@ -47,7 +47,7 @@ while [ "$1" != "" ]; do
             exit 0
             ;;
         --appdir)
-            APPDIR="$2"
+            APPDIR="$(readlink -f "$2")"
             shift
             shift
             ;;
