@@ -129,38 +129,36 @@ popd
 # interfere with libraries bundled by other plugins or linuxdeploy itself
 bash "$CONDA_DOWNLOAD_DIR"/"$miniconda_installer_filename" -b -p "$APPDIR"/usr/conda -f
 
-# activate environment
-. "$APPDIR"/usr/conda/bin/activate
-
 # we don't want to touch the system, therefore using a temporary home
 mkdir -p _temp_home
 export HOME=$(readlink -f _temp_home)
 
 # conda-forge is used by many conda packages, therefore we'll add that channel by default
-conda config --add channels conda-forge
+"$APPDIR"/usr/conda/bin/conda config --add channels conda-forge
 
 # force-install libxi, required by a majority of packages on some more annoying distributions like e.g., Arch
 #conda install -y xorg-libxi
 
 # force another python version if requested
 if [ "$CONDA_PYTHON_VERSION" != "" ]; then
-    conda install -y python="$CONDA_PYTHON_VERSION"
+    "$APPDIR"/usr/conda/bin/conda install -y python="$CONDA_PYTHON_VERSION"
 fi
 
 # add channels specified via $CONDA_CHANNELS
 IFS=';' read -ra chans <<< "$CONDA_CHANNELS"
 for chan in "${chans[@]}"; do
-    conda config --append channels "$chan"
+    "$APPDIR"/usr/conda/bin/conda config --append channels "$chan"
 done
 
 # install packages specified via $CONDA_PACKAGES
 IFS=';' read -ra pkgs <<< "$CONDA_PACKAGES"
 for pkg in "${pkgs[@]}"; do
-    conda install -y "$pkg"
+    "$APPDIR"/usr/conda/bin/conda install -y "$pkg"
 done
 
 # make sure pip is up to date
-pip install -U pip
+"$APPDIR"/usr/conda/bin/python -m ensurepip
+"$APPDIR"/usr/conda/bin/pip install -U pip
 
 # install requirements from PyPI specified via $PIP_REQUIREMENTS
 if [ "$PIP_REQUIREMENTS" != "" ]; then
@@ -168,7 +166,7 @@ if [ "$PIP_REQUIREMENTS" != "" ]; then
         pushd "$PIP_WORKDIR"
     fi
 
-    pip install -U $PIP_REQUIREMENTS ${PIP_PREFIX:+--prefix=$PIP_PREFIX} ${PIP_VERBOSE:+-v}
+    "$APPDIR"/usr/conda/bin/pip install -U $PIP_REQUIREMENTS ${PIP_PREFIX:+--prefix=$PIP_PREFIX} ${PIP_VERBOSE:+-v}
 
     if [ "$PIP_WORKDIR" != "" ]; then
         popd
