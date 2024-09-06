@@ -22,7 +22,7 @@ show_usage() {
     echo "  CONDA_PYTHON_VERSION=\"3.6\""
     echo "  PIP_REQUIREMENTS=\"packageA packageB -r requirements.txt -e git+https://...\""
     echo "  PIP_PREFIX=\"AppDir/usr/share/conda\""
-    echo "  ARCH=\"$ARCH\" (supported values: x86_64, i368, i686)"
+    echo "  ARCH=\"$ARCH\" (supported values: x86_64, i368, i686, aarch64)"
     echo "  CONDA_SKIP_CLEANUP=\"[all;][conda-pkgs;][__pycache__;][strip;][.a;][cmake;][doc;][man;][site-packages;]\""
 }
 
@@ -108,6 +108,9 @@ case "$ARCH" in
         ;;
     "i386"|"i686")
         miniconda_installer_filename=Miniconda3-latest-Linux-x86.sh
+        ;;
+    "aarch64")
+        miniconda_installer_filename=Miniconda3-latest-Linux-aarch64.sh
         ;;
     *)
         log "ERROR: Unknown Miniconda arch: $ARCH"
